@@ -6,3 +6,9 @@ def index(request):
 
 def about(request):
     return HttpResponse('О сайте')
+
+def categories(request, cat_slug):
+    return HttpResponse(f'Страница с категорией: {cat_slug}')
+
+def archive(request, year):
+    return HttpResponse(f'<h2>Страница с архивом {year} года</h2>')
