@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from models import Women
+
+from women.models import Women
 
 cats_db = [
     {'id': 1, 'name': 'Актрисы'},
@@ -26,10 +27,11 @@ data_db = [
 
 
 def index(request):
+    posts = Women.objects.filter(is_published=1)
     data = {
         'title': 'Главная страница',
         'menu': menu,
-        'posts': data_db,
+        'posts': posts,
     }
     return render(request, 'women/index.html', data)
 
@@ -54,7 +56,9 @@ def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1> <h2>У вас ошибка</h2>")
 
 def show_post(request, post_slug):
-    return HttpResponse(f'Отображение статьи с id: {post_slug}')
+    post = get_object_or_404(Women, slug=post_slug)
+
+    return render(request, 'women/post.html', {'post': post} )
 
 
 def addpage(request):

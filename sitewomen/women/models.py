@@ -1,6 +1,3 @@
-from email.policy import default
-from enum import unique
-
 from django.db import models
 
 class Women(models.Model):

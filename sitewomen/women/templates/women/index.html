@@ -10,7 +10,7 @@
 	{{p.content|linebreaks|truncatewords:40}}
     {% endautoescape %}
 			<div class="clear"></div>
-			<p class="link-read-post"><a href="{% url 'post' p.id %}">Читать пост</a></p>
+			<p class="link-read-post"><a href="{% url 'post' p.slug %}">Читать пост</a></p>
 			</li>
 	{% endif %}
 	{% endfor %}
