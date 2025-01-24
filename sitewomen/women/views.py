@@ -67,7 +67,14 @@ def contact(request):
 def login(request):
     return HttpResponse("Авторизация")
 
-
+def show_category(request, cat_id):
+    data = {
+        'title': 'Отображение категории',
+        'menu': menu,
+        'posts': data_db,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', data)
 
 
 
