@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from models import Women
 
 cats_db = [
     {'id': 1, 'name': 'Актрисы'},
@@ -52,8 +53,8 @@ def archive(request, year):
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1> <h2>У вас ошибка</h2>")
 
-def show_post(request, post_id):
-    return HttpResponse(f'Отображение статьи с id: {post_id}')
+def show_post(request, post_slug):
+    return HttpResponse(f'Отображение статьи с id: {post_slug}')
 
 
 def addpage(request):
