@@ -2,7 +2,7 @@ from django.db import models
 
 class PublishedModel(models.Manager):
     def get_queryset(self):
-        return super().get_queryset.filter(is_published=Women.Status.PUBLISHED)
+        return super().get_queryset().filter(is_published=Women.Status.PUBLISHED)
 
 class Women(models.Model):
     class Status(models.IntegerChoices):
@@ -17,10 +17,15 @@ class Women(models.Model):
     slug = models.SlugField(max_length=255, default='', blank=True)
     objects = models.Manager()
     published = PublishedModel()
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=255, db_index=True, unique=True)
 
-
+    def __str__(self):
+        return self.name
 

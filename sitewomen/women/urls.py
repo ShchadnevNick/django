@@ -1,7 +1,4 @@
-from multiprocessing.resource_tracker import register
-from tkinter.font import names
-
-from django.urls import path, re_path, register_converter
+from django.urls import path, register_converter
 from women import views
 from women import converters
 
