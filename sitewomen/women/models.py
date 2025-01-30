@@ -20,6 +20,7 @@ class Women(models.Model):
     published = PublishedModel()
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts')
     tags = models.ManyToManyField('TagPost', blank=True, related_name='tags')
+    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, null=True, blank=True, related_name='wuman')
 
     def __str__(self):
         return self.title
@@ -42,6 +43,12 @@ class TagPost(models.Model):
     def __str__(self):
         return self.tag
 
+class Husband(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.name
 
 
 
