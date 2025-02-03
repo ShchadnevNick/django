@@ -6,6 +6,14 @@ class PublishedModel(models.Manager):
         return super().get_queryset().filter(is_published=Women.Status.PUBLISHED)
 
 class Women(models.Model):
+
+    class Meta:
+        verbose_name = 'Известные женщины'
+        verbose_name_plural = 'Известные женщины'
+
+    def get_absolute_url(self):
+        return reverse('post', kwargs={'post_slug': self.slug})
+
     class Status(models.IntegerChoices):
         DRAFT = 0, 'Черновик'
         PUBLISHED = 1, 'Опубликовано'
