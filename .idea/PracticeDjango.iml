@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/sitewomen" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/djvenv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.13 virtualenv at C:\PracticeDjango\djvenv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
