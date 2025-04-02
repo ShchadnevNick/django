@@ -1,10 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-
-from women.forms import AddPostForm
+from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost
-
+import uuid
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
@@ -22,10 +21,33 @@ def index(request):
     return render(request, 'women/index.html', data)
 
 
+def handle_uploaded_file(f):
+    name = f.name # Получаем оригинальное имя файла
+    # Отделяем расширение от имени
+    ext = ''
+    if '.' in name:
+        ext = name[name.rindex('.'):] # Берём всё после последней точки
+        name = name[:name.rindex('.')] # Берём всё до последней точки
+    # Генерируем случайный UUID
+    suffix = str(uuid.uuid4()) # Н-р:'3b6f5f2d-8cae-4d9c-9fe8-7c3f5a1b0d4e'
+    # Сохраняем файл с новым именем
+    with open(f"uploads/{name}_{suffix}{ext}", "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def about(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(form.cleaned_data['file'])
+    else:
+        form = UploadFileForm()
+
     data = {
         'title': 'О сайте',
         'menu': menu,
+        'form': form,
     }
     return render(request, 'women/about.html', data)
 

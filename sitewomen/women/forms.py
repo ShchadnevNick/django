@@ -2,6 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Category, Husband, Women
 
+class UploadFileForm(forms.Form):
+    file = forms.ImageField(label="Изображение")
 
 class AddPostForm(forms.ModelForm):
     class Meta:
