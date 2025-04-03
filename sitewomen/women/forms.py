@@ -3,12 +3,12 @@ from django.core.exceptions import ValidationError
 from .models import Category, Husband, Women
 
 class UploadFileForm(forms.Form):
-    file = forms.ImageField(label="Изображение")
+    file = forms.FileField(label="Изображение")
 
 class AddPostForm(forms.ModelForm):
     class Meta:
         model = Women
-        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'husband', 'tags']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'husband', 'tags']
         widget = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols':60, 'rows':10}),

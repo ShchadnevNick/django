@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanen
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from women.forms import AddPostForm, UploadFileForm
-from women.models import Women, Category, TagPost
+from women.models import Women, Category, TagPost, UploadFiles
 import uuid
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -40,16 +40,13 @@ def about(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(form.cleaned_data['file'])
+            # handle_uploaded_file(form.cleaned_data['file'])
+            fp = UploadFiles(file=form.cleaned_data['file'])
+            fp.save()
     else:
         form = UploadFileForm()
 
-    data = {
-        'title': 'О сайте',
-        'menu': menu,
-        'form': form,
-    }
-    return render(request, 'women/about.html', data)
+    return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu, 'form': form})
 
 
 def categories(request, cat_slug):
@@ -74,7 +71,7 @@ def show_post(request, post_slug):
 
 def addpage(request):
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('home')

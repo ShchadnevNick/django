@@ -30,6 +30,7 @@ class Women(models.Model):
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts', verbose_name='Категории')
     tags = models.ManyToManyField('TagPost', blank=True, related_name='tags', verbose_name='Тэги')
     husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, null=True, blank=True, related_name='wuman', verbose_name='Муж')
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", default=None, blank=True, null=True, verbose_name="Фото")
 
     def __str__(self):
         return self.title
@@ -64,5 +65,7 @@ class Husband(models.Model):
     def __str__(self):
         return self.name
 
-
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to='uploads_model')
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", default=None, blank=True, null=True, verbose_name="Фото")
 
