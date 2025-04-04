@@ -1,6 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views import View
+from django.views.generic import TemplateView, ListView
+
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
 import uuid
@@ -11,14 +14,15 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Войти", 'url_name': 'login'}
 ]
 
-def index(request):
-    data = {
+class WomenHome(ListView):
+    template_name = 'women/index.html'
+    extra_context = {
         'title': 'Главная страница',
         'menu': menu,
         'posts': Women.published.all().select_related('cat'),
         'cat_selected': 0,
     }
-    return render(request, 'women/index.html', data)
+
 
 
 def handle_uploaded_file(f):
@@ -69,21 +73,22 @@ def show_post(request, post_slug):
     return render(request, 'women/post.html', {'post': post} )
 
 
-def addpage(request):
-    if request.method == 'POST':
+class AddPage(View):
+    def get(self, request):
+        form = AddPostForm()
+        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
+
+        return render(request, 'women/addpage.html', data)
+
+    def post(self, request):
         form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('home')
-    else:
-        form = AddPostForm()
-        
-    data = {
-        'menu': menu,
-        'title': 'Добавление статьи',
-        'form': form
-    }
-    return render(request, 'women/addpage.html', data)
+
+        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
+
+        return render(request, 'women/addpage.html', data)
 
 
 def contact(request):
