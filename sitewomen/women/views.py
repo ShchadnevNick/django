@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanen
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, Category, TagPost, UploadFiles
@@ -14,14 +14,22 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Войти", 'url_name': 'login'}
 ]
 
+
 class WomenHome(ListView):
+    model = Women # Women.objects.all())
     template_name = 'women/index.html'
-    extra_context = {
-        'title': 'Главная страница',
-        'menu': menu,
-        'posts': Women.published.all().select_related('cat'),
-        'cat_selected': 0,
-    }
+    context_object_name = 'posts'
+    # Расширяем контекст шаблона
+    def get_context_data(self, **kwargs):
+        # Получаем базовый контекст (уже содержит posts=Women.objects.all())
+        context = super().get_context_data(**kwargs)
+        # Расширяем контекст шаблона
+        context['title'] = 'Главная страница' # Заголовок страницы
+        context['menu'] = menu # Предположительно список пунктов меню
+        context['cat_selected'] = 0
+        return context
+
+
 
 
 
@@ -53,8 +61,21 @@ def about(request):
     return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu, 'form': form})
 
 
-def categories(request, cat_slug):
-    return HttpResponse(f'Страница с категорией: {cat_slug}')
+class WomenCategory(ListView):
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cat = context['posts'][0].cat  # Берем категорию ПЕРВОЙ записи
+        context['title'] = 'Категория - ' + cat.name  # Динамический заголовок
+        context['menu'] = menu
+        context['cat_selected'] = cat.id  # ID для подсветки
+        return context
+
+    def get_queryset(self):  # Берём только опубликованные записи
+        return Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
 
 
 def archive(request, year):
@@ -99,29 +120,22 @@ def login(request):
     return HttpResponse("Авторизация")
 
 
-def show_category(request, cat_slug):
-    category = get_object_or_404(Category, slug=cat_slug)
-    posts = Women.published.filter(cat_id=category.pk).select_related("cat")
-    data = {
-        'title': f'Рубрика: {category.name}',
-        'menu': menu,
-        'posts': posts,
-        'cat_selected': category.pk,
-    }
-    return render(request, 'women/index.html', data)
+class TagPostList(ListView):
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag = TagPost.objects.get(slug=self.kwargs['tag_slug'])
+        context['title'] = 'Тег: ' + tag.tag
+        context['menu'] = menu
+        context['cat_selected'] = None
+        return context
 
-def show_tag_postlist(request, tag_slug):
-    tag = get_object_or_404(TagPost, slug=tag_slug)
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related("cat")
-    data = {
-        'title': f'Тег:{tag.tag}',
-        'menu': menu,
-        'posts': posts,
-        'cat_selected': None,
-    }
+    def get_queryset(self):
+        return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
-    return render(request, 'women/index.html', data)
 
 
 
