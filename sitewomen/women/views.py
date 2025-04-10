@@ -1,11 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from django.views import View
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, FormView
 
 from women.forms import AddPostForm, UploadFileForm
-from women.models import Women, Category, TagPost, UploadFiles
+from women.models import Women, TagPost, UploadFiles
 import uuid
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -105,22 +104,14 @@ class ShowPost(DetailView):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddPage(View):
-    def get(self, request):
-        form = AddPostForm()
-        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
-
-        return render(request, 'women/addpage.html', data)
-
-    def post(self, request):
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-
-        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
-
-        return render(request, 'women/addpage.html', data)
+class AddPage(FormView):
+    form_class = AddPostForm
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'menu': menu,
+        'title': 'Добавление статьи',
+    }
 
 
 def contact(request):
