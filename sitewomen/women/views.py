@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, TagPost, UploadFiles
@@ -104,8 +104,9 @@ class ShowPost(DetailView):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddPage(FormView):
-    form_class = AddPostForm
+class AddPage(CreateView):
+    model = Women
+    fields = '__all__'
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
     extra_context = {
@@ -139,14 +140,23 @@ class TagPostList(ListView):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
 
+class UpdatePage(UpdateView):
+    model = Women
+    fields = ['title', 'content', 'photo', 'is_published', 'cat']
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'menu': menu,
+        'title': 'Редактирование статьи',
+    }
 
-
-
-
-
-
-
-
-
+class DeletePage(DeleteView):
+    model = Women  # Та же модель, что и в UpdateView
+    template_name = 'women/deletepage.html'  # Шаблон подтверждения удаления
+    success_url = reverse_lazy('home')  # Перенаправление на главную после удаления
+    extra_context = {
+        'menu': menu,  # То же меню, что и в других классах
+        'title': 'Удаление статьи',  # Заголовок
+    }
 
 
