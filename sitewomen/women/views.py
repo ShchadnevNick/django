@@ -17,10 +17,12 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 
 
 class WomenHome(DataMixin, ListView):
-    model = Women # Women.objects.all())
     template_name = 'women/index.html'
     context_object_name = 'posts'
     # Расширяем контекст шаблона
+    def get_queryset(self):
+        return Women.published.all().select_related('cat')
+
     def get_context_data(self, **kwargs):
         return self.get_mixin_context(super().get_context_data(**kwargs),
                                       title='Главная страница',
@@ -62,7 +64,6 @@ class WomenCategory(DataMixin, ListView):
         return self.get_mixin_context(context,
                                       title='Категория - ' + cat.name,
                                       cat_selected=cat.id,)
-
 
     def get_queryset(self):  # Берём только опубликованные записи
         return Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
