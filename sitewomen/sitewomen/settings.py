@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'debug_toolbar',
+    'users.apps.UsersConfig',
     'django_extensions',
     'women.apps.WomenConfig',
     'django.contrib.admin',
