@@ -11,6 +11,7 @@ class Women(models.Model):
     class Meta:
         verbose_name = 'Известные женщины'
         verbose_name_plural = 'Известные женщины'
+        ordering = ['title']
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_slug': self.slug})

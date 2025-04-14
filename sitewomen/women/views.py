@@ -7,13 +7,7 @@ from women.forms import AddPostForm, UploadFileForm
 from women.models import Women, TagPost, UploadFiles
 import uuid
 
-from women.utils import DataMixin
-
-menu = [{'title': "О сайте", 'url_name': 'about'},
-        {'title': "Добавить статью", 'url_name': 'add_page'},
-        {'title': "Обратная связь", 'url_name': 'contact'},
-        {'title': "Войти", 'url_name': 'login'}
-]
+from women.utils import DataMixin, menu
 
 
 class WomenHome(DataMixin, ListView):
