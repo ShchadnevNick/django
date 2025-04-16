@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import models
 from django.urls import reverse
@@ -7,6 +8,7 @@ class PublishedModel(models.Manager):
         return super().get_queryset().filter(is_published=Women.Status.PUBLISHED)
 
 class Women(models.Model):
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='posts', null=True, default=None)
 
     class Meta:
         verbose_name = 'Известные женщины'
