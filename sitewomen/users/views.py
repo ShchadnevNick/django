@@ -1,5 +1,8 @@
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
 from users.forms import LoginUserForm, RegisterUserForm
 
 
@@ -19,5 +22,13 @@ def register(request):
     else:
         form = RegisterUserForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+class RegisterUser(CreateView):
+    form_class = RegisterUserForm
+    template_name = 'users/register.html'
+    extra_context = {'title': "Регистрация"}
+
+    success_url = reverse_lazy('users:login')
 
 
