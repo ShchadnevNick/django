@@ -1,11 +1,11 @@
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 from . import views
 
 app_name = 'users'  # Пространство имен приложения
 
 urlpatterns = [
-    # Полное имя:'users:login'
-    path('login/', views.login_user, name='login'),
-    # Полное имя:'users:logout'
-    path('logout/', views.logout_user, name='logout'),
+    path('login/', views.LoginUser.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
+
