@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from django.conf.global_settings import INTERNAL_IPS, STATICFILES_DIRS, LOGOUT_REDIRECT_URL
+from django.conf.global_settings import INTERNAL_IPS, STATICFILES_DIRS, LOGOUT_REDIRECT_URL, AUTHENTICATION_BACKENDS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,6 +97,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.authentication.EmailAuthBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
