@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from django.conf.global_settings import INTERNAL_IPS, STATICFILES_DIRS, LOGOUT_REDIRECT_URL, AUTHENTICATION_BACKENDS
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -138,4 +136,15 @@ LOGOUT_REDIRECT_URL = 'home'
 
 LOGIN_URL = 'users:login'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.yandex.ru"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "nicolay-shchadnev@yandex.ru"
+EMAIL_HOST_PASSWORD = "gkuewiyfhhcpfytb"
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER
+
