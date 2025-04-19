@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponsePermanentRedirect
 from django.shortcuts import render, get_object_or_404
@@ -90,7 +90,8 @@ class ShowPost(DataMixin, DetailView):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddPage(LoginRequiredMixin, DataMixin, CreateView):
+class AddPage(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, CreateView):
+    permission_required =  'women.add_women'
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     title_page = 'Добавление статьи'
@@ -101,8 +102,10 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
         return super().form_valid(form)
 
 
+@permission_required(perm='women.add_women', raise_exception=True)
 def contact(request):
     return HttpResponse("Обратная связь")
+
 
 
 def login(request):
@@ -124,7 +127,7 @@ class TagPostList(DataMixin, ListView):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
 
-class UpdatePage(UpdateView):
+class UpdatePage(PermissionRequiredMixin, UpdateView):
     model = Women
     fields = ['title', 'content', 'photo', 'is_published', 'cat']
     template_name = 'women/addpage.html'
